@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Хартія-Хаб — Просвітницький центр 2-го корпусу НГУ «Хартія»</title>
+    
+    <!-- Google Fonts & Leaflet Map CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:ital,wght@0,500;0,700;0,800;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- TOUCHDESIGNER HUD GENERATIVE CANVAS -->
+    <canvas id="touchCanvas"></canvas>
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="#hero" class="logo-link">
+                <img src="img/logo.svg" alt="Хартія-Хаб" class="site-logo">
+            </a>
+            
+            <nav class="main-nav" id="mainNav">
+                <a href="#hero" class="nav-link">ГОЛОВНА</a>
+                <a href="#events" class="nav-link">ПОДІЇ</a>
+                <a href="#activity" class="nav-link">ПРО ХАБ</a>
+                <a href="#hub-events" class="nav-link">НАПРЯМКИ</a>
+                <a href="#recruitment" class="nav-link">РЕКРУТИНГ</a>
+                <a href="#locations" class="nav-link">ЛОКАЦІЇ</a>
+                <a href="#merch" class="nav-link">МЕРЧ <span class="badge-tbd">TBD</span></a>
+            </nav>
+
+            <div class="header-right">
+                <div class="socials">
+                    <a href="https://www.instagram.com/khartiia_hub/" target="_blank" aria-label="Instagram">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                    </a>
+                    <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                    </a>
+                    <a href="https://tiktok.com" target="_blank" aria-label="TikTok">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+                    </a>
+                    <a href="https://youtube.com" target="_blank" aria-label="YouTube">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+                    </a>
+                </div>
+
+                <a href="https://send.monobank.ua" target="_blank" class="btn-donate">ЗАДОНАТИТИ</a>
+                <button class="btn-cabinet" id="openCabinetBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span>КАБІНЕТ</span>
+                </button>
+
+                <button class="burger-menu" id="burgerBtn" aria-label="Відкрити меню">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECTION 1: HERO -->
+    <section class="hero" id="hero">
+        <div class="video-container">
+            <video autoplay loop muted playsinline class="bg-video">
+                <source src="video/videobg.mov" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+
+        <div class="tactical-grid">
+            <div class="grid-pattern"></div>
+            <div class="tactical-square top-left"></div>
+            <div class="tactical-square top-right"></div>
+            <div class="tactical-square bottom-left"></div>
+            <div class="tactical-square bottom-right"></div>
+            <div class="hud-tag">2-Й КОРПУС НГУ «ХАРТІЯ»</div>
+            <div class="hud-code">21486 / HUB</div>
+        </div>
+
+        <div class="hero-content">
+            <h1 class="hero-title">ХАРТІЯ-ХАБ</h1>
+
+            <div class="plate-system">
+                <div class="plate-item">
+                    <span>Просвітницький центр 2-го корпусу НГУ «Хартія»</span>
+                </div>
+                <div class="plate-item">
+                    <span>Обʼєднуємо суспільство і військо</span>
+                </div>
+            </div>
+
+            <div class="cta-group">
+                <a href="#events" class="btn-cta">ПЕРЕГЛЯНУТИ ПОДІЇ</a>
+                <a href="#volunteer" class="btn-cta-secondary">СТАТИ ВОЛОНТЕРОМ</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: EVENTS CATALOG -->
+    <section class="section section-events" id="events">
+        <div class="section-container">
+            <h2 class="section-title">АКТУАЛЬНІ ПОДІЇ</h2>
+
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label>МІСТО:</label>
+                    <div class="select-wrapper">
+                        <select id="filterCity">
+                            <option value="all">Усі міста</option>
+                            <option value="Київ">Київ</option>
+                            <option value="Полтава">Полтава</option>
+                            <option value="Львів">Львів</option>
+                            <option value="Дніпро">Дніпро</option>
+                            <option value="Івано-Франківськ">Івано-Франківськ</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label>КАТЕГОРІЯ:</label>
+                    <div class="select-wrapper">
+                        <select id="filterCategory">
+                            <option value="all">Усі категорії</option>
+                            <option value="Лекція">Лекції</option>
+                            <option value="Тренінг">Тренінги з домедики</option>
+                            <option value="Психологія">Психологічні зустрічі</option>
+                            <option value="Кіно">Перегляд стрічок</option>
+                            <option value="Дискусія">Дискусії</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-group search-group">
+                    <div class="input-wrapper search-input-wrapper">
+                        <input type="text" id="filterSearch" placeholder="Пошук події...">
+                    </div>
+                </div>
+            </div>
+
+            <div class="events-grid" id="eventsGrid">
+                <!-- Картки генеруються JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: ABOUT / ACTIVITY -->
+    <section class="section section-activity" id="activity">
+        <div class="section-container">
+            <div class="tactical-square top-left"></div>
+            <div class="tactical-square top-right"></div>
+
+            <h2 class="section-title">НАША ДІЯЛЬНІСТЬ</h2>
+
+            <div class="plate-system">
+                <div class="plate-item">
+                    <span>Єдність, довіра й готовність підтримувати одне одного</span>
+                </div>
+            </div>
+
+            <div class="about-lead-text">
+                <p><strong>Хартія-Хаб</strong> – просвітницький центр 2-го корпусу НГУ «Хартія», який обʼєднує цивільних та військових. Нам потрібна єдність, довіра й готовність підтримувати одне одного, щоб здолати російську загрозу і зберегти українську державність.</p>
+            </div>
+
+            <div class="clausewitz-block">
+                <div class="tactical-square top-left"></div>
+                <div class="tactical-square top-right"></div>
+                <div class="tactical-square bottom-left"></div>
+                <div class="tactical-square bottom-right"></div>
+
+                <h3 class="block-title">ТРИКУТНИК МІЦНОСТІ ДЕРЖАВИ</h3>
+                <span class="block-subtitle">ЗА КАРЛОМ ФОН КЛАУЗЕВІЦОМ</span>
+
+                <div class="triangle-container">
+                    <svg class="triangle-svg" viewBox="0 0 500 350">
+                        <polygon points="250,40 50,300 450,300" class="triangle-poly" />
+                        <line x1="250" y1="40" x2="250" y2="180" class="triangle-dash" />
+                        <line x1="50" y1="300" x2="250" y2="180" class="triangle-dash" />
+                        <line x1="450" y1="300" x2="250" y2="180" class="triangle-dash" />
+                    </svg>
+
+                    <div class="tr-node node-top">
+                        <span class="node-tag">01</span>
+                        <span class="node-name">ВЛАДА</span>
+                    </div>
+                    <div class="tr-node node-left">
+                        <span class="node-tag">02</span>
+                        <span class="node-name">СУСПІЛЬСТВО</span>
+                    </div>
+                    <div class="tr-node node-right">
+                        <span class="node-tag">03</span>
+                        <span class="node-name">ВІЙСЬКО</span>
+                    </div>
+                    <div class="tr-center-badge">
+                        <span>МІЦНА ДЕРЖАВА</span>
+                    </div>
+                </div>
+
+                <div class="clausewitz-quote">
+                    <span>Міцне обʼєднане суспільство = здобутки на полі бою.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: HUB DIRECTIONS -->
+    <section class="section section-hub-events" id="hub-events">
+        <div class="section-container">
+            <div class="tactical-square top-left"></div>
+            <div class="tactical-square top-right"></div>
+
+            <h2 class="section-title">ЯКІ ПОДІЇ ВІДБУВАЮТЬСЯ У ХАРТІЯ-ХАБІ?</h2>
+            
+            <div class="plate-system">
+                <div class="plate-item">
+                    <span>Усе про Україну та військо, яке її захищає</span>
+                </div>
+            </div>
+
+            <div class="hub-directions-grid">
+                <div class="direction-card-massive">
+                    <div class="card-num-huge">01</div>
+                    <div class="card-content-wrap">
+                        <span class="card-tag">ЗУСТРІЧІ</span>
+                        <h3 class="card-huge-title">Зустрічі з хартійцями</h3>
+                        <a href="#events" class="card-action-btn" data-filter-cat="all">ПЕРЕГЛЯНУТИ РОЗКЛАД →</a>
+                    </div>
+                </div>
+
+                <div class="direction-card-massive">
+                    <div class="card-num-huge">02</div>
+                    <div class="card-content-wrap">
+                        <span class="card-tag">ВИШКІЛ</span>
+                        <h3 class="card-huge-title">Тренінги з домедичної допомоги</h3>
+                        <a href="#events" class="card-action-btn" data-filter-cat="Тренінг">ЗАПИСАТИСЯ НА ТРЕНІНГ →</a>
+                    </div>
+                </div>
+
+                <div class="direction-card-massive">
+                    <div class="card-num-huge">03</div>
+                    <div class="card-content-wrap">
+                        <span class="card-tag">ПІДТРИМКА</span>
+                        <h3 class="card-huge-title">Психологічні зустрічі для родин</h3>
+                        <a href="#events" class="card-action-btn" data-filter-cat="Психологія">ДІЗНАТИСЯ БІЛЬШЕ →</a>
+                    </div>
+                </div>
+
+                <div class="direction-card-massive">
+                    <div class="card-num-huge">04</div>
+                    <div class="card-content-wrap">
+                        <span class="card-tag">КІНО</span>
+                        <h3 class="card-huge-title">Перегляди стрічок про війну</h3>
+                        <a href="#events" class="card-action-btn" data-filter-cat="Кіно">АФІША КІНОПОКАЗІВ →</a>
+                    </div>
+                </div>
+
+                <div class="direction-card-massive">
+                    <div class="card-num-huge">05</div>
+                    <div class="card-content-wrap">
+                        <span class="card-tag">КУЛЬТУРА</span>
+                        <h3 class="card-huge-title">Творчі події та виставки</h3>
+                        <a href="#events" class="card-action-btn" data-filter-cat="all">КАЛЕНДАР ПОДІЙ →</a>
+                    </div>
+                </div>
+
+                <div class="direction-card-massive">
+                    <div class="card-num-huge">06</div>
+                    <div class="card-content-wrap">
+                        <span class="card-tag">МЕДІА</span>
+                        <h3 class="card-huge-title">Дискусії з медійниками</h3>
+                        <a href="#events" class="card-action-btn" data-filter-cat="Дискусія">ЗАРЕЄСТРУВАТИСЯ →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: LECTURES BANNER -->
+    <section class="section section-lectures" id="lectures">
+        <div class="section-container">
+            <div class="lectures-hero-banner">
+                <div class="tactical-square top-left"></div>
+                <div class="tactical-square top-right"></div>
+                <div class="tactical-square bottom-left"></div>
+                <div class="tactical-square bottom-right"></div>
+
+                <div class="banner-head-flex">
+                    <h2 class="section-title text-accent">ЛЕКЦІЇ В ХАРТІЯ-ХАБІ:</h2>
+                    <a href="#events" class="btn-banner-link" data-filter-cat="Лекція">УСІ АКТУАЛЬНІ ЛЕКЦІЇ (2)</a>
+                </div>
+
+                <div class="lectures-brutalist-grid">
+                    <div class="lecture-item-block">
+                        <div class="lec-top-bar">
+                            <span class="lec-icon">/01</span>
+                            <a href="#events" class="lec-badge-link" data-filter-cat="Лекція">АФІША</a>
+                        </div>
+                        <h3 class="lec-topic">Про історію та культуру України</h3>
+                    </div>
+
+                    <div class="lecture-item-block">
+                        <div class="lec-top-bar">
+                            <span class="lec-icon">/02</span>
+                            <a href="#events" class="lec-badge-link" data-filter-cat="Лекція">АФІША</a>
+                        </div>
+                        <h3 class="lec-topic">Про природу російсько-української війни</h3>
+                    </div>
+
+                    <div class="lecture-item-block">
+                        <div class="lec-top-bar">
+                            <span class="lec-icon">/03</span>
+                            <a href="#events" class="lec-badge-link" data-filter-cat="Лекція">АФІША</a>
+                        </div>
+                        <h3 class="lec-topic">Про нове українське військо</h3>
+                    </div>
+
+                    <div class="lecture-item-block">
+                        <div class="lec-top-bar">
+                            <span class="lec-icon">/04</span>
+                            <a href="#events" class="lec-badge-link" data-filter-cat="Лекція">АФІША</a>
+                        </div>
+                        <h3 class="lec-topic">Про протидію російській агресії</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: RECRUITMENT -->
+    <section class="section section-recruitment" id="recruitment">
+        <div class="section-container">
+            <h2 class="section-title">РЕКРУТИНГ ТА ДІАЛОГ У ХАРТІЯ-ХАБІ</h2>
+
+            <div class="recruitment-split-grid">
+                <div class="rec-split-card card-hub">
+                    <div class="tactical-square top-left"></div>
+                    <div class="tactical-square bottom-right"></div>
+
+                    <div class="rec-card-header">
+                        <span class="rec-badge-accent">У МЕЖАХ ХАБУ</span>
+                        <h3 class="rec-card-title">ПРОСТІР ДЛЯ СВІДОМОГО ДІАЛОГУ</h3>
+                    </div>
+
+                    <ul class="rec-bullet-list">
+                        <li>
+                            <strong class="bullet-title">Відповіді про цінності</strong>
+                            <p>Детально розповідаємо про принципи та бачення бригади «Хартія».</p>
+                        </li>
+                        <li>
+                            <strong class="bullet-title">Консультації щодо посад</strong>
+                            <p>Допомагаємо підібрати напрямок відповідно до вашого цивільного досвіду.</p>
+                        </li>
+                        <li>
+                            <strong class="bullet-title">Передача контактів</strong>
+                            <p>Пряма комунікація з рекрутерами бригади за вашим бажанням.</p>
+                        </li>
+                    </ul>
+
+                    <div class="rec-card-footer">
+                        <a href="#locations" class="rec-action-btn">ЗАВІТАТИ ДО ХАБУ ДЛЯ КОНСУЛЬТАЦІЇ →</a>
+                    </div>
+                </div>
+
+                <div class="rec-split-card card-process">
+                    <div class="tactical-square top-right"></div>
+                    <div class="tactical-square bottom-left"></div>
+
+                    <div class="rec-card-header">
+                        <span class="rec-badge-outline">ПОЗА МЕЖАМИ ХАБУ</span>
+                        <h3 class="rec-card-title">ОФІЦІЙНИЙ ПРОЦЕС РЕКРУТИНГУ</h3>
+                    </div>
+
+                    <ul class="rec-bullet-list">
+                        <li>
+                            <strong class="bullet-title">Без перевірок та співбесід у хабі</strong>
+                            <p>У хабі не потрібно проходити інтерв'ю чи надавати документи.</p>
+                        </li>
+                        <li>
+                            <strong class="bullet-title">Офіційні рекрутингові центри</strong>
+                            <p>Подача документів здійснюється виключно через спеціалізовані центри.</p>
+                        </li>
+                        <li>
+                            <strong class="bullet-title">ВЛК та оформлення</strong>
+                            <p>Медичний огляд та зарахування проходять за процедурою в органах комплектування.</p>
+                        </li>
+                    </ul>
+
+                    <div class="rec-card-footer">
+                        <a href="https://khartiia.org" target="_blank" class="rec-action-btn outline">ОФІЦІЙНИЙ САЙТ БРИГАДИ ↗</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recruitment-quote-banner">
+                <p>Наша мета – створити простір для діалогу про сучасне українське військо та усвідомлених рішень стати його частиною.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 7: VOLUNTEER -->
+    <section class="section section-volunteer" id="volunteer">
+        <div class="section-container">
+            <div class="volunteer-hero-card">
+                <div class="tactical-square top-left"></div>
+                <div class="tactical-square top-right"></div>
+                <div class="tactical-square bottom-left"></div>
+                <div class="tactical-square bottom-right"></div>
+
+                <div class="vol-content-inner">
+                    <h2 class="vol-massive-title">ВИ МОЖЕТЕ СТАТИ ВОЛОНТЕРОМ ХАРТІЯ-ХАБУ!</h2>
+                    <p class="vol-lead-text">Допомога з організацією подій, простору, створенням контенту – запрошуємо вас долучитися до спільної справи.</p>
+                    
+                    <a href="https://forms.gle/Bf7dMVF5mUdQbmYT6" target="_blank" class="btn-cta-massive">
+                        <span>ЗАПОВНИТИ АНКЕТУ ВОЛОНТЕРА</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 8: MAP & LOCATIONS -->
+    <section class="section section-locations" id="locations">
+        <div class="section-container">
+            <h2 class="section-title">НАШІ ЛОКАЦІЇ</h2>
+
+            <div class="schedule-bar">
+                <div class="plate-item">
+                    <span>Графік роботи просторів:</span>
+                </div>
+                <div class="schedule-times">
+                    <span>Пн – Пт: 10:00 – 19:00</span>
+                    <span class="dot">•</span>
+                    <span>Сб: 11:00 – 18:00</span>
+                </div>
+            </div>
+
+            <div class="locations-wrapper">
+                <div class="map-container">
+                    <div class="tactical-square top-left"></div>
+                    <div class="tactical-square top-right"></div>
+                    <div class="tactical-square bottom-left"></div>
+                    <div class="tactical-square bottom-right"></div>
+                    <div id="map"></div>
+                </div>
+
+                <div class="locations-list">
+                    <div class="loc-card active" data-city="kyiv">
+                        <span class="loc-city">КИЇВ</span>
+                        <span class="loc-addr">вул. Шота Руставелі, 39/41</span>
+                    </div>
+                    <div class="loc-card" data-city="poltava">
+                        <span class="loc-city">ПОЛТАВА</span>
+                        <span class="loc-addr">вул. В’ячеслава Чорновола, 7Б</span>
+                    </div>
+                    <div class="loc-card" data-city="lviv">
+                        <span class="loc-city">ЛЬВІВ</span>
+                        <span class="loc-addr">вул. Академіка Гнатюка, 17</span>
+                    </div>
+                    <div class="loc-card" data-city="dnipro">
+                        <span class="loc-city">ДНІПРО</span>
+                        <span class="loc-addr">вул. Барикадна, 20</span>
+                    </div>
+                    <div class="loc-card" data-city="if">
+                        <span class="loc-city">ІВАНО-ФРАНКІВСЬК</span>
+                        <span class="loc-addr">вул. Академіка Сахарова, 23 (Промприлад, Foodoteka 1А)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 9: MERCH -->
+    <section class="section section-merch" id="merch">
+        <div class="section-container">
+            <div class="merch-banner">
+                <div class="tactical-square top-left"></div>
+                <div class="tactical-square top-right"></div>
+                <div class="tactical-square bottom-left"></div>
+                <div class="tactical-square bottom-right"></div>
+
+                <div class="merch-content">
+                    <h2 class="section-title">МАГАЗИН МЕРЧУ</h2>
+                    <div class="plate-system">
+                        <div class="plate-item"><span>Розділ перебуває у розробці (TBD)</span></div>
+                    </div>
+                    <p>Офіційний мерч Хартія-Хабу буде доступний для замовлення незабаром. Усі кошти від реалізації спрямовуватимуться на підтримання та розвиток просвітницьких проектів Хабу.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <img src="img/logo.svg" alt="Хартія" class="footer-logo">
+                <p class="footer-copy">Хартія-Хаб — просвітницький центр 2-го корпусу НГУ «Хартія»</p>
+            </div>
+            
+            <div class="footer-links">
+                <a href="https://khartiia.org" target="_blank">khartiia.org</a>
+                <a href="https://forms.gle/Bf7dMVF5mUdQbmYT6" target="_blank">Стати волонтером</a>
+                <a href="https://linktr.ee/khatiiahub" target="_blank">Linktree Хабу</a>
+            </div>
+
+            <div class="footer-right">
+                <span class="footer-tag">© 2026 ХАРТІЯ-ХАБ</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: EVENT REGISTRATION -->
+    <div class="modal-overlay" id="eventModal">
+        <div class="modal-content event-modal-content">
+            <button class="modal-close" id="closeEventModal">&times;</button>
+            
+            <div class="event-modal-grid">
+                <div class="event-modal-left">
+                    <div class="modal-header">
+                        <span class="badge-city" id="modalCity">КИЇВ</span>
+                        <span class="modal-datetime" id="modalDateTime">15 ЖОВТНЯ, ВТ, 18:30</span>
+                    </div>
+
+                    <h2 class="modal-event-title" id="modalTitle">НАЗВА ПОДІЇ</h2>
+                    <div class="modal-desc" id="modalDescription"></div>
+
+                    <div class="modal-terms">
+                        <span class="term-label">Умови участі:</span>
+                        <span class="term-value" id="modalTerms">Безоплатна участь</span>
+                        <a href="https://send.monobank.ua" target="_blank" class="btn-donate-link" id="modalDonateBtn" style="display:none;">ЗРОБИТИ ДОНАТ НА БАНКУ</a>
+                    </div>
+
+                    <button class="btn-calendar" id="btnAddToCalendar">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        Додати в Google Календар
+                    </button>
+
+                    <hr class="modal-divider">
+
+                    <form class="registration-form" id="eventRegistrationForm">
+                        <h3 class="form-title">РЕЄСТРАЦІЯ НА ПОДІЮ</h3>
+
+                        <div class="form-group">
+                            <label for="regName">ПІБ (ПОВНІСТЮ) *</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="regName" required placeholder="Шевченко Тарас Григорович">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="regPhone">НОМЕР ТЕЛЕФОНУ *</label>
+                            <div class="input-wrapper">
+                                <input type="tel" id="regPhone" required placeholder="+380 (00) 000-00-00">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="regTelegram">TELEGRAM (@USERNAME) *</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="regTelegram" required placeholder="@username">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="regSource">ЗВІДКИ ДІЗНАЛИСЯ ПРО ПОДІЮ?</label>
+                            <div class="select-wrapper">
+                                <select id="regSource">
+                                    <option value="Instagram">Instagram Хабу</option>
+                                    <option value="Telegram">Telegram-канал</option>
+                                    <option value="Друзі">Від друзів / знайомих</option>
+                                    <option value="Інше">Інше</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="regQuestion">ЗАПИТАННЯ ДО СПІКЕРА</label>
+                            <div class="input-wrapper">
+                                <textarea id="regQuestion" rows="2" placeholder="Напишіть ваше запитання..."></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-submit-reg">
+                            <span>ПІДТВЕРДИТИ РЕЄСТРАЦІЮ</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="event-modal-right">
+                    <div class="poster-wrapper-4-5">
+                        <img src="" id="modalPoster" alt="Афіша">
+                    </div>
+                    <div class="seats-counter-badge" id="modalSeats">
+                        Залишилось місць: 12
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: AUTH / CABINET -->
+    <div class="modal-overlay" id="cabinetModal">
+        <div class="modal-content cabinet-auth-content">
+            <button class="modal-close" id="closeCabinetModal">&times;</button>
+
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active" id="tabLoginBtn">ВХІД У КАБІНЕТ</button>
+                <button class="auth-tab-btn" id="tabRegisterBtn">СТВОРИТИ АККАУНТ</button>
+            </div>
+
+            <div class="sso-container">
+                <button class="btn-sso-google" id="btnGoogleAuth">
+                    <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+                    Швидкий вхід через Google
+                </button>
+                <div class="auth-divider"><span>АБО ЧЕРЕЗ EMAIL</span></div>
+            </div>
+
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">EMAIL АДРЕСА *</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="loginEmail" required placeholder="user@domain.com">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">ПАРОЛЬ *</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="loginPassword" required placeholder="••••••••">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit-reg">УВІЙТИ В КАБІНЕТ</button>
+            </form>
+
+            <form class="auth-form" id="registerForm" style="display: none;">
+                <div class="form-group">
+                    <label for="regAccName">ПІБ КОРУСТУВАЧА *</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="regAccName" required placeholder="Олександр Коваль">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regAccEmail">EMAIL АДРЕСА *</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="regAccEmail" required placeholder="user@domain.com">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regAccPhone">ТЕЛЕФОН *</label>
+                    <div class="input-wrapper">
+                        <input type="tel" id="regAccPhone" required placeholder="+380 (00) 000-00-00">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regAccPassword">ПАРОЛЬ *</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="regAccPassword" required placeholder="Мінімум 8 символів">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit-reg">ЗАРЕЄСТРУВАТИ АКАУНТ</button>
+            </form>
+
+            <div class="user-saved-area" id="userSavedArea" style="display:none;">
+                <div class="plate-system" style="margin-top:20px;">
+                    <div class="plate-item"><span>Збережені події ("Сердечка")</span></div>
+                </div>
+                <div class="saved-events-grid" id="savedEventsGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
