@@ -10,13 +10,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="" defer></script>
     <script src="js/data.js" defer></script>
     <script src="js/app.js" defer></script>
+    <script src="js/fx.js" defer></script>
 </head>
 <body data-page="home">
     <a href="#main" class="skip-link">Перейти до змісту</a>
-    <canvas id="touchCanvas" aria-hidden="true"></canvas>
     <div id="site-header"></div>
 
     <main id="main">
@@ -28,6 +30,7 @@
                 </video>
                 <div class="video-overlay"></div>
             </div>
+            <canvas class="fx-canvas hero-reticle" data-fx="reticle" aria-hidden="true"></canvas>
 
             <div class="tactical-grid" aria-hidden="true">
                 <div class="grid-pattern">
@@ -39,24 +42,44 @@
             </div>
 
             <div class="hero-content">
-                <h1 class="hero-title">Хартія-Хаб</h1>
-                <p class="plate-system">
-                    <span class="plate-item">Просвітницький центр</span>
-                    <span class="plate-item">Обʼєднуємо суспільство і військо</span>
-                </p>
-                <div class="btn-row">
-                    <a href="#events" class="btn btn--primary btn--lg">Переглянути події</a>
-                    <a href="#volunteer" class="btn btn--ghost btn--lg">Стати волонтером</a>
+                <div class="hero-main">
+                    <p class="eyebrow eyebrow--light reveal">Просвітницький центр · 5 міст України</p>
+                    <h1 class="hero-title reveal"><span class="hero-title__frame">Хартія-Хаб</span></h1>
+                    <p class="plate-system reveal">
+                        <span class="plate-item">Обʼєднуємо суспільство і військо</span>
+                        <span class="plate-item">через знання, діалог і спільні справи</span>
+                    </p>
+                    <div class="btn-row reveal">
+                        <a href="#events" class="btn btn--primary btn--lg">Переглянути події</a>
+                        <a href="#volunteer" class="btn btn--ghost btn--lg">Стати волонтером</a>
+                    </div>
                 </div>
             </div>
+
+            <div class="hero-ticker" aria-hidden="true">
+                <div class="marquee">
+                    <div class="marquee__track">
+                        <span>Лекції</span><span>Тренінги з домедики</span><span>Кінопокази</span><span>Дискусії</span><span>Зустрічі з хартійцями</span><span>Виставки</span><span>Підтримка родин</span>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#events" class="scroll-cue" aria-label="Прокрутити до подій"><span></span></a>
         </section>
 
         <!-- EVENTS -->
-        <section class="section" id="events" aria-labelledby="eventsTitle">
+        <section class="section section--topo" id="events" aria-labelledby="eventsTitle">
+            <canvas class="fx-canvas" data-fx="topo" aria-hidden="true"></canvas>
             <div class="section-container">
-                <h2 class="section-title" id="eventsTitle">Актуальні події</h2>
+                <div class="section-head">
+                    <div class="section-head__main">
+                        <p class="eyebrow reveal"><span class="eyebrow__idx">01</span>Афіша</p>
+                        <h2 class="section-title reveal" id="eventsTitle">Актуальні події</h2>
+                    </div>
+                    <p class="section-head__aside reveal">Лекції, тренінги, кінопокази та зустрічі з військовими у пʼяти містах. Участь — за попередньою реєстрацією.</p>
+                </div>
 
-                <form class="filter-bar" id="filterForm" role="search" aria-label="Пошук подій">
+                <form class="filter-bar reveal" id="filterForm" role="search" aria-label="Пошук подій">
                     <div class="filter-field">
                         <label for="filterCity">Місто</label>
                         <div class="select-wrapper"><select class="input" id="filterCity"></select></div>
@@ -84,189 +107,233 @@
         </section>
 
         <!-- ABOUT -->
-        <section class="section" id="about" aria-labelledby="aboutTitle">
+        <section class="section section--about" id="about" aria-labelledby="aboutTitle">
             <div class="section-container">
-                <h2 class="section-title" id="aboutTitle">Наша діяльність</h2>
-                <p class="plate-system">
-                    <span class="plate-item">Єдність, довіра й готовність</span>
-                    <span class="plate-item">підтримувати одне одного</span>
-                </p>
-
-                <div class="about-lead-text">
-                    <p><strong>Хартія-Хаб</strong> — просвітницький центр 2-го корпусу НГУ «Хартія», який обʼєднує цивільних та військових. Нам потрібна єдність, довіра й готовність підтримувати одне одного, щоб здолати російську загрозу і зберегти українську державність.</p>
-                </div>
-
-                <div class="clausewitz-block">
-                    <span class="tactical-square top-left" aria-hidden="true"></span>
-                    <span class="tactical-square top-right" aria-hidden="true"></span>
-                    <span class="tactical-square bottom-left" aria-hidden="true"></span>
-                    <span class="tactical-square bottom-right" aria-hidden="true"></span>
-
-                    <h3 class="block-title">Трикутник міцності держави</h3>
-                    <p class="block-subtitle">За Карлом фон Клаузевіцом</p>
-
-                    <div class="triangle-container" role="img" aria-label="Схема: влада, суспільство і військо разом утворюють міцну державу">
-                        <svg class="triangle-svg" viewBox="0 0 500 350" aria-hidden="true">
-                            <polygon points="250,40 50,300 450,300" class="triangle-poly" />
-                            <line x1="250" y1="40" x2="250" y2="180" class="triangle-dash" />
-                            <line x1="50" y1="300" x2="250" y2="180" class="triangle-dash" />
-                            <line x1="450" y1="300" x2="250" y2="180" class="triangle-dash" />
-                        </svg>
-                        <div class="tr-node node-top" aria-hidden="true"><span class="node-tag">01</span><span class="node-name">Влада</span></div>
-                        <div class="tr-node node-left" aria-hidden="true"><span class="node-tag">02</span><span class="node-name">Суспільство</span></div>
-                        <div class="tr-node node-right" aria-hidden="true"><span class="node-tag">03</span><span class="node-name">Військо</span></div>
-                        <div class="tr-center-badge" aria-hidden="true">Міцна держава</div>
+                <div class="about-grid">
+                    <div class="about-copy">
+                        <p class="eyebrow reveal"><span class="eyebrow__idx">02</span>Про хаб</p>
+                        <h2 class="section-title reveal" id="aboutTitle">Наша діяльність</h2>
+                        <p class="plate-system reveal">
+                            <span class="plate-item">Єдність, довіра й готовність</span>
+                            <span class="plate-item">підтримувати одне одного</span>
+                        </p>
+                        <p class="lead-text reveal"><strong>Хартія-Хаб</strong> — просвітницький центр, який обʼєднує цивільних та військових. Нам потрібна єдність, довіра й готовність підтримувати одне одного, щоб здолати російську загрозу і зберегти українську державність.</p>
+                        <dl class="stats" id="aboutStats"></dl>
                     </div>
 
-                    <p class="clausewitz-quote">Міцне обʼєднане суспільство = здобутки на полі бою.</p>
+                    <div class="about-visual reveal" aria-hidden="true">
+                        <span class="tactical-square top-left"></span>
+                        <span class="tactical-square top-right"></span>
+                        <span class="tactical-square bottom-left"></span>
+                        <span class="tactical-square bottom-right"></span>
+                        <canvas class="fx-canvas" data-fx="particles"></canvas>
+                        <span class="hud-label hud-label--tl">Сила — в єдності</span>
+                        <span class="hud-label hud-label--br">Кожна частинка — людина</span>
+                    </div>
+                </div>
+
+                <div class="triad reveal" id="triad">
+                    <div class="triad__head">
+                        <h3 class="block-title">Трикутник міцності держави</h3>
+                        <p class="block-subtitle">За Карлом фон Клаузевіцом</p>
+                    </div>
+
+                    <div class="triad__body">
+                        <div class="triad__diagram" role="img" aria-label="Схема: влада, суспільство і військо разом утворюють міцну державу">
+                            <svg viewBox="0 0 500 380" aria-hidden="true">
+                                <polygon class="triad__poly" points="250,40 40,330 460,330" pathLength="1" />
+                                <line class="triad__dash" x1="250" y1="40" x2="250" y2="230" />
+                                <line class="triad__dash" x1="40" y1="330" x2="250" y2="230" />
+                                <line class="triad__dash" x1="460" y1="330" x2="250" y2="230" />
+                                <circle class="triad__pulse" cx="250" cy="230" r="34" />
+                                <g class="triad__node" data-node="0"><rect x="226" y="16" width="48" height="48" /><text x="250" y="47">01</text></g>
+                                <g class="triad__node" data-node="1"><rect x="16" y="306" width="48" height="48" /><text x="40" y="337">02</text></g>
+                                <g class="triad__node" data-node="2"><rect x="436" y="306" width="48" height="48" /><text x="460" y="337">03</text></g>
+                            </svg>
+                            <span class="triad__center">Міцна держава</span>
+                        </div>
+
+                        <ol class="triad__list">
+                            <li data-node="0" tabindex="0">
+                                <span class="triad__num">01</span>
+                                <div><strong>Влада</strong><p>Ухвалює рішення та відповідає за стратегію держави.</p></div>
+                            </li>
+                            <li data-node="1" tabindex="0">
+                                <span class="triad__num">02</span>
+                                <div><strong>Суспільство</strong><p>Підтримує військо, довіряє йому і поповнює його лави.</p></div>
+                            </li>
+                            <li data-node="2" tabindex="0">
+                                <span class="triad__num">03</span>
+                                <div><strong>Військо</strong><p>Захищає державу та спирається на підтримку людей.</p></div>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <p class="triad__quote">Міцне обʼєднане суспільство = здобутки на полі бою.</p>
                 </div>
             </div>
         </section>
 
         <!-- PROJECTS -->
-        <section class="section" id="projects" aria-labelledby="projectsTitle">
+        <section class="section section--crosshair" id="projects" aria-labelledby="projectsTitle">
+            <canvas class="fx-canvas" data-fx="crosshair" aria-hidden="true"></canvas>
             <div class="section-container">
-                <h2 class="section-title" id="projectsTitle">Проєкти</h2>
-                <p class="plate-system">
-                    <span class="plate-item">Напрямки та субпродукти Хартія-Хабу</span>
-                </p>
-                <div class="projects-grid" id="projectsGrid"></div>
+                <div class="section-head">
+                    <div class="section-head__main">
+                        <p class="eyebrow reveal"><span class="eyebrow__idx">03</span>Напрямки</p>
+                        <h2 class="section-title reveal" id="projectsTitle">Проєкти</h2>
+                    </div>
+                    <p class="section-head__aside reveal">Субпродукти Хартія-Хабу: від просвіти і роботи з молоддю до бігоклубу та Школи Рекрута.</p>
+                </div>
+
+                <div class="projects" id="projects-list">
+                    <ol class="projects__list" id="projectsList"></ol>
+                    <div class="projects__preview" id="projectsPreview" aria-live="polite"></div>
+                </div>
             </div>
         </section>
 
         <!-- EVENT FORMATS -->
-        <section class="section" id="formats" aria-labelledby="formatsTitle">
+        <section class="section section--texture" id="formats" aria-labelledby="formatsTitle">
+            <div class="texture-bg" aria-hidden="true"><span class="texture-bg__scan"></span></div>
             <div class="section-container">
-                <h2 class="section-title" id="formatsTitle">Які події відбуваються у Хартія-Хабі?</h2>
-                <p class="plate-system">
+                <div class="section-head">
+                    <div class="section-head__main">
+                        <p class="eyebrow reveal"><span class="eyebrow__idx">04</span>Формати</p>
+                        <h2 class="section-title reveal" id="formatsTitle">Які події відбуваються у Хартія-Хабі?</h2>
+                    </div>
+                </div>
+                <p class="plate-system reveal">
                     <span class="plate-item">Усе про Україну та військо, яке її захищає</span>
                 </p>
 
-                <div class="formats-grid">
-                    <a href="#events" class="format-card" data-filter-cat="Зустріч">
-                        <span class="format-card__num">01</span>
-                        <span class="badge badge--outline">Зустрічі</span>
-                        <h3 class="format-card__title">Зустрічі з хартійцями</h3>
-                        <span class="format-card__action">Переглянути розклад →</span>
-                    </a>
-                    <a href="#events" class="format-card" data-filter-cat="Тренінг">
-                        <span class="format-card__num">02</span>
-                        <span class="badge badge--outline">Вишкіл</span>
-                        <h3 class="format-card__title">Тренінги з домедичної допомоги</h3>
-                        <span class="format-card__action">Записатися на тренінг →</span>
-                    </a>
-                    <a href="#events" class="format-card" data-filter-cat="Психологія">
-                        <span class="format-card__num">03</span>
-                        <span class="badge badge--outline">Підтримка</span>
-                        <h3 class="format-card__title">Психологічні зустрічі для родин</h3>
-                        <span class="format-card__action">Дізнатися більше →</span>
-                    </a>
-                    <a href="#events" class="format-card" data-filter-cat="Кіно">
-                        <span class="format-card__num">04</span>
-                        <span class="badge badge--outline">Кіно</span>
-                        <h3 class="format-card__title">Перегляди стрічок про війну</h3>
-                        <span class="format-card__action">Афіша кінопоказів →</span>
-                    </a>
-                    <a href="#events" class="format-card" data-filter-cat="Культура">
-                        <span class="format-card__num">05</span>
-                        <span class="badge badge--outline">Культура</span>
-                        <h3 class="format-card__title">Творчі події та виставки</h3>
-                        <span class="format-card__action">Календар подій →</span>
-                    </a>
-                    <a href="#events" class="format-card" data-filter-cat="Дискусія">
-                        <span class="format-card__num">06</span>
-                        <span class="badge badge--outline">Медіа</span>
-                        <h3 class="format-card__title">Дискусії з медійниками</h3>
-                        <span class="format-card__action">Переглянути дискусії →</span>
-                    </a>
+                <div class="carousel">
+                    <button type="button" class="icon-btn carousel__arrow carousel__arrow--prev" data-carousel-prev aria-label="Попередні формати" aria-controls="formatsCarousel">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+                    </button>
+                    <div class="formats-carousel" id="formatsCarousel" tabindex="0" aria-label="Формати подій, прокрутка вбік"></div>
+                    <button type="button" class="icon-btn carousel__arrow carousel__arrow--next" data-carousel-next aria-label="Наступні формати" aria-controls="formatsCarousel">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                    </button>
                 </div>
 
-                <div class="lectures-banner">
-                    <span class="tactical-square top-left" aria-hidden="true"></span>
-                    <span class="tactical-square top-right" aria-hidden="true"></span>
-                    <span class="tactical-square bottom-left" aria-hidden="true"></span>
-                    <span class="tactical-square bottom-right" aria-hidden="true"></span>
-
-                    <div class="section-head">
+                <div class="lectures">
+                    <div class="lectures__head reveal">
                         <h3 class="section-title section-title--md">Лекції в Хартія-Хабі</h3>
                         <a href="#events" class="btn btn--primary" data-filter-cat="Лекція">Усі актуальні лекції<span data-lecture-count></span></a>
                     </div>
-
-                    <ul class="lectures-grid">
-                        <li class="lecture-item"><span class="lecture-item__num">/01</span><span class="lecture-item__topic">Про історію та культуру України</span></li>
-                        <li class="lecture-item"><span class="lecture-item__num">/02</span><span class="lecture-item__topic">Про природу російсько-української війни</span></li>
-                        <li class="lecture-item"><span class="lecture-item__num">/03</span><span class="lecture-item__topic">Про нове українське військо</span></li>
-                        <li class="lecture-item"><span class="lecture-item__num">/04</span><span class="lecture-item__topic">Про протидію російській агресії</span></li>
-                    </ul>
+                    <ul class="lectures__list" id="lecturesList"></ul>
                 </div>
             </div>
         </section>
 
         <!-- MATERIALS -->
-        <section class="section" id="materials" aria-labelledby="materialsTitle">
+        <section class="section section--light" id="materials" aria-labelledby="materialsTitle">
             <div class="section-container">
                 <div class="section-head">
-                    <h2 class="section-title" id="materialsTitle">Матеріали</h2>
-                    <a href="materials.html" class="btn btn--ghost">Усі матеріали</a>
+                    <div class="section-head__main">
+                        <p class="eyebrow reveal"><span class="eyebrow__idx">05</span>Медіа</p>
+                        <h2 class="section-title reveal" id="materialsTitle">Матеріали</h2>
+                    </div>
+                    <div class="section-head__aside section-head__aside--action reveal">
+                        <p>Офіційні стейтменти та звіти з ключових подій — з фотогалереями.</p>
+                        <a href="materials.html" class="btn btn--dark">Усі матеріали</a>
+                    </div>
                 </div>
-                <p class="plate-system">
-                    <span class="plate-item">Офіційні стейтменти та звіти з ключових подій</span>
-                </p>
-                <div class="materials-grid" id="materialsPreview"></div>
+                <div class="materials-feature" id="materialsPreview"></div>
             </div>
         </section>
 
         <!-- PARTNERS -->
-        <section class="section" id="partners" aria-labelledby="partnersTitle">
+        <section class="section section--partners" id="partners" aria-labelledby="partnersTitle">
             <div class="section-container">
-                <h2 class="section-title" id="partnersTitle">Партнери</h2>
-                <p class="plate-system">
-                    <span class="plate-item">Донори та організації, з якими ми працюємо</span>
-                </p>
-                <div class="partners-grid" id="partnersGrid"></div>
+                <div class="section-head">
+                    <div class="section-head__main">
+                        <p class="eyebrow reveal"><span class="eyebrow__idx">06</span>Разом сильніші</p>
+                        <h2 class="section-title reveal" id="partnersTitle">Партнери</h2>
+                    </div>
+                    <div class="section-head__aside section-head__aside--action reveal">
+                        <p>Донори та організації, з якими ми робимо події та проєкти.</p>
+                        <a href="#" class="btn btn--ghost" id="partnerCta" target="_blank" rel="noopener">Стати партнером</a>
+                    </div>
+                </div>
             </div>
+            <div class="partners-marquee" id="partnersMarquee"></div>
         </section>
 
         <!-- REPORTS -->
-        <section class="section" id="reports" aria-labelledby="reportsTitle">
+        <section class="section section--sections" id="reports" aria-labelledby="reportsTitle">
+            <div class="sections-bg" aria-hidden="true"><span></span><span></span><span></span></div>
             <div class="section-container">
-                <h2 class="section-title" id="reportsTitle">Звітність</h2>
-                <p class="plate-system">
-                    <span class="plate-item">Річні звіти про діяльність та донати</span>
-                </p>
-                <div class="reports-list" id="reportsList"></div>
+                <div class="section-head">
+                    <div class="section-head__main">
+                        <p class="eyebrow reveal"><span class="eyebrow__idx">07</span>Прозорість</p>
+                        <h2 class="section-title reveal" id="reportsTitle">Звітність</h2>
+                    </div>
+                    <p class="section-head__aside reveal">Ми публічно звітуємо про діяльність і про кожну гривню донатів.</p>
+                </div>
+                <div class="reports" id="reportsList"></div>
             </div>
         </section>
 
         <!-- VOLUNTEER -->
-        <section class="section" id="volunteer" aria-labelledby="volunteerTitle">
-            <div class="section-container">
-                <div class="volunteer-card">
-                    <span class="tactical-square top-left" aria-hidden="true"></span>
-                    <span class="tactical-square top-right" aria-hidden="true"></span>
-                    <span class="tactical-square bottom-left" aria-hidden="true"></span>
-                    <span class="tactical-square bottom-right" aria-hidden="true"></span>
-
-                    <h2 class="section-title" id="volunteerTitle">Станьте волонтером Хартія-Хабу</h2>
-                    <p class="lead-text">Допомога з організацією подій, простору, створенням контенту — запрошуємо вас долучитися до спільної справи.</p>
-                    <a href="https://forms.gle/Bf7dMVF5mUdQbmYT6" target="_blank" rel="noopener" class="btn btn--primary btn--lg">
-                        Заповнити анкету волонтера
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                    </a>
+        <section class="section section--accent" id="volunteer" aria-labelledby="volunteerTitle">
+            <div class="volunteer-marquee" aria-hidden="true">
+                <div class="marquee marquee--slow" data-speed="35">
+                    <div class="marquee__track">
+                        <span>Долучайся</span>
+                    </div>
                 </div>
             </div>
+            <div class="section-container">
+                <div class="volunteer">
+                    <div class="volunteer__copy">
+                        <p class="eyebrow eyebrow--dark reveal"><span class="eyebrow__idx">08</span>Волонтерство</p>
+                        <h2 class="section-title reveal" id="volunteerTitle">Станьте волонтером Хартія-Хабу</h2>
+                        <p class="lead-text reveal">Допомога з організацією подій, простору, створенням контенту — запрошуємо вас долучитися до спільної справи.</p>
+                        <a href="https://forms.gle/Bf7dMVF5mUdQbmYT6" target="_blank" rel="noopener" class="btn btn--dark btn--lg reveal" id="volunteerCta">
+                            Заповнити анкету волонтера
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </a>
+                    </div>
+                    <ol class="steps">
+                        <li class="reveal"><span class="steps__num">01</span><strong>Заповніть анкету</strong><p>Розкажіть, у чому хочете допомагати і в якому місті.</p></li>
+                        <li class="reveal"><span class="steps__num">02</span><strong>Знайомство з координатором</strong><p>Звʼяжемося з вами і запросимо на зустріч у хабі.</p></li>
+                        <li class="reveal"><span class="steps__num">03</span><strong>Перша подія</strong><p>Долучитеся до команди на найближчій події.</p></li>
+                    </ol>
+                </div>
+            </div>
+            <img src="img/logomark2.svg" alt="" class="volunteer__chevron" data-parallax="0.8" aria-hidden="true" width="183" height="241">
         </section>
 
-        <!-- CONTACTS -->
+        <!-- CONTACTS / MAP -->
         <section class="section" id="contacts" aria-labelledby="contactsTitle">
             <div class="section-container">
-                <h2 class="section-title" id="contactsTitle">Наші хаби</h2>
-                <p class="plate-system">
-                    <span class="plate-item">Залиште заявку керівниці хабу,</span>
-                    <span class="plate-item">щоб прийти до нас</span>
-                </p>
-                <p class="schedule">Графік роботи: <strong>Пн – Пт 10:00 – 19:00</strong> · <strong>Сб 11:00 – 18:00</strong></p>
-                <div class="contacts-grid" id="contactsGrid"></div>
+                <div class="section-head">
+                    <div class="section-head__main">
+                        <p class="eyebrow reveal"><span class="eyebrow__idx">09</span>Контакти</p>
+                        <h2 class="section-title reveal" id="contactsTitle">Наші хаби</h2>
+                    </div>
+                    <div class="section-head__aside reveal">
+                        <p>Залиште заявку керівниці хабу у вашому місті, щоб прийти до нас. Адресу повідомимо особисто.</p>
+                        <p class="schedule">Пн – Пт <strong>10:00 – 19:00</strong> · Сб <strong>11:00 – 18:00</strong></p>
+                    </div>
+                </div>
+
+                <div class="hubs reveal">
+                    <div class="hubs__map">
+                        <span class="tactical-square top-left" aria-hidden="true"></span>
+                        <span class="tactical-square top-right" aria-hidden="true"></span>
+                        <span class="tactical-square bottom-left" aria-hidden="true"></span>
+                        <span class="tactical-square bottom-right" aria-hidden="true"></span>
+                        <div id="hubsMap" class="map" aria-label="Мапа хабів"></div>
+                        <div class="map-hud" aria-hidden="true">
+                            <span id="mapHudCity">Україна</span>
+                            <span id="mapHudCoords">49.0000° N · 31.0000° E</span>
+                        </div>
+                    </div>
+                    <div class="hubs__list" id="contactsGrid" role="list"></div>
+                </div>
             </div>
         </section>
     </main>

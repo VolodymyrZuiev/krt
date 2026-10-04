@@ -2,7 +2,7 @@
     const D = window.SITE_DATA;
     const page = document.body.dataset.page;
     const isHome = page === 'home';
-    const HOME_EVENTS_LIMIT = 9;
+    const HOME_EVENTS_LIMIT = 6;
     const EVENTS_PAGE_SIZE = 9;
     const STORAGE_SAVED = 'khartiia_saved_events';
     const STORAGE_USER = 'khartiia_user';
@@ -58,6 +58,11 @@
         chevronLeft: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>',
         chevronRight: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>',
         phone: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+        pin: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+        check: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="4 12 10 18 20 6"/></svg>',
+        coin: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 9.5h4.5a2 2 0 0 1 0 4H9"/></svg>',
+        download: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12"/><polyline points="7 10 12 15 17 10"/><path d="M4 21h16"/></svg>',
+        camera: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 7h4l2-3h6l2 3h4v13H3z"/><circle cx="12" cy="13" r="4"/></svg>',
         share: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>'
     };
 
@@ -550,22 +555,37 @@
 
     /* ---------- EVENT CARDS ---------- */
 
-    const posterVariant = {
-        'Лекція': 'accent', 'Тренінг': 'green', 'Психологія': 'gray', 'Кіно': 'black',
-        'Дискусія': 'green', 'Зустріч': 'accent', 'Культура': 'gray'
-    };
+    const eventPhoto = (ev) => ev.photo || D.categoryPhotos[ev.category] || 'img/photos/ev-meeting.jpg';
+    const fmtMonthShort = new Intl.DateTimeFormat('uk-UA', { month: 'short' });
 
+    // Власна афіша з CRM має пріоритет; без неї збираємо брендову афішу з фото події
     const posterHtml = (ev, orientation, alt = '') => {
         const src = ev.poster?.[orientation];
         if (src) {
             const [w, h] = orientation === 'v' ? [960, 1200] : [1200, 640];
             return `<img src="${esc(src)}" alt="${esc(alt)}" loading="lazy" width="${w}" height="${h}">`;
         }
+        const photo = `<img src="${esc(eventPhoto(ev))}" class="poster__photo" alt="" loading="lazy">`;
+        if (orientation === 'h') return `<div class="poster poster--h">${photo}<span class="poster__shade"></span></div>`;
+        const d = new Date(ev.start);
         return `
-            <div class="poster-ph poster-ph--${posterVariant[ev.category] || 'black'} poster-ph--${orientation}"${alt ? ` role="img" aria-label="${esc(alt)}"` : ''}>
-                <span class="poster-ph__tag">Хартія-Хаб · ${esc(ev.city)}</span>
-                <span class="poster-ph__title">${esc(ev.category)}</span>
+            <div class="poster poster--v"${alt ? ` role="img" aria-label="${esc(alt)}"` : ''}>
+                ${photo}
+                <span class="poster__shade"></span>
+                <img src="img/hublogo.svg" class="poster__logo" alt="" width="220" height="85">
+                <div class="poster__bottom">
+                    <span class="poster__title">${esc(ev.title)}</span>
+                    <span class="plate-system">
+                        <span class="plate-item">${esc(fmtDay.format(d))}, ${esc(fmtTime.format(d))}</span>
+                        <span class="plate-item">${esc(ev.city)}</span>
+                    </span>
+                </div>
             </div>`;
+    };
+
+    const dateChip = (iso) => {
+        const d = new Date(iso);
+        return `<span class="date-chip"><b>${d.getDate()}</b><span>${esc(fmtMonthShort.format(d).replace('.', ''))}</span></span>`;
     };
 
     const heartButton = (ev) => {
@@ -574,25 +594,30 @@
                     aria-pressed="${saved}" aria-label="${saved ? 'Прибрати зі збережених' : 'Зберегти подію'}">${icon.heart}</button>`;
     };
 
-    const eventCard = (ev) => `
+    const eventCard = (ev) => {
+        const d = new Date(ev.start);
+        return `
         <article class="event-card">
             <a href="${eventUrl(ev)}" class="event-card__media" tabindex="-1" aria-hidden="true">
                 ${posterHtml(ev, 'h')}
+                <span class="event-card__cat">${esc(categoryLabel(ev.category))}</span>
+                ${dateChip(ev.start)}
             </a>
             ${heartButton(ev)}
             <div class="event-card__body">
-                <div class="card-meta">
-                    <span class="badge">${esc(ev.city)}</span>
-                    <time class="card-datetime" datetime="${esc(ev.start)}">${esc(formatEventDate(ev))}</time>
-                </div>
+                <p class="event-card__meta">
+                    <span>${icon.pin}${esc(ev.city)}</span>
+                    <time datetime="${esc(ev.start)}">${esc(fmtWeekday.format(d))}, ${esc(formatEventTimeRange(ev))}</time>
+                </p>
                 <h3 class="event-card__title"><a href="${eventUrl(ev)}">${esc(ev.title)}</a></h3>
-                <p class="event-card__terms">${esc(ev.terms)}</p>
+                <p class="event-card__terms">${ev.isDonation ? icon.coin : icon.check}${esc(ev.terms)}</p>
                 <div class="event-card__actions">
                     <button type="button" class="btn btn--primary" data-register="${esc(ev.id)}" aria-haspopup="dialog">Зареєструватися</button>
-                    <a href="${eventUrl(ev)}" class="btn btn--ghost">Детальніше</a>
+                    <a href="${eventUrl(ev)}" class="btn btn--ghost btn--icon" aria-label="Детальніше: ${esc(ev.title)}">${icon.arrow}</a>
                 </div>
             </div>
         </article>`;
+    };
 
     function initGlobalEventActions() {
         document.addEventListener('click', (e) => {
@@ -718,98 +743,447 @@
     function initHome() {
         const filters = initEventFilters({ limit: HOME_EVENTS_LIMIT, syncUrl: false });
 
-        $$('[data-filter-cat]').forEach((link) => link.addEventListener('click', () => {
-            filters?.setCategory(link.dataset.filterCat);
-        }));
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('[data-filter-cat]');
+            if (link) filters?.setCategory(link.dataset.filterCat);
+        });
 
-        const lectureCount = upcomingEvents().filter((ev) => ev.category === 'Лекція').length;
-        $$('[data-lecture-count]').forEach((el) => { el.textContent = lectureCount ? ` (${lectureCount})` : ''; });
-
+        renderStats();
         renderProjects();
+        renderFormats();
+        renderLectures();
         renderMaterialsPreview();
         renderPartners();
         renderReports();
         renderContacts();
+        initTriad();
         initHeroVideo();
     }
 
-    function renderProjects() {
-        const grid = $('#projectsGrid');
-        if (!grid) return;
-        grid.innerHTML = D.projects.map((p, i) => `
-            <article class="project-card">
-                <span class="project-card__num">${String(i + 1).padStart(2, '0')}</span>
-                <h3 class="project-card__title">${esc(p.title)}</h3>
-                <p class="project-card__text">${p.description ? esc(p.description) : 'Опис проєкту зʼявиться найближчим часом.'}</p>
-                ${p.note ? `<span class="badge badge--outline">${esc(p.note)}</span>` : ''}
-            </article>`).join('');
+    const pad = (n) => String(n).padStart(2, '0');
+    const plural = (n, [one, few, many]) => {
+        const m10 = n % 10, m100 = n % 100;
+        if (m10 === 1 && m100 !== 11) return one;
+        if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few;
+        return many;
+    };
+
+    // У розмітці трека — один набір елементів. Набір повторюється, доки не перекриє ширину
+    // контейнера, а потім дублюється: зсув на -50% збігається з початком другої копії без розриву.
+    function initMarquees() {
+        const tracks = $$('.marquee__track').map((track) => ({ track, set: track.innerHTML }));
+        if (!tracks.length) return;
+
+        const build = () => {
+            tracks.forEach(({ track, set }) => {
+                const box = track.parentElement;
+                track.innerHTML = set;
+                const setWidth = track.scrollWidth;
+                if (!setWidth) return;
+                const repeats = Math.max(1, Math.ceil(box.clientWidth / setWidth));
+                const unit = set.repeat(repeats);
+                track.innerHTML = unit + unit;
+                const speed = Number(box.dataset.speed) || 60;
+                track.style.animationDuration = `${((setWidth * repeats) / speed).toFixed(2)}s`;
+            });
+        };
+
+        build();
+        document.fonts?.ready.then(build);
+        let width = window.innerWidth, timer;
+        window.addEventListener('resize', () => {
+            if (window.innerWidth === width) return;
+            width = window.innerWidth;
+            clearTimeout(timer);
+            timer = setTimeout(build, 200);
+        });
     }
 
-    const materialCard = (m) => `
-        <article class="material-card">
+    function renderStats() {
+        const mount = $('#aboutStats');
+        if (!mount) return;
+        const stats = [
+            { value: D.contacts.length, label: plural(D.contacts.length, ['хаб в Україні', 'хаби в Україні', 'хабів в Україні']) },
+            { value: D.projects.length, label: 'проєктів і напрямків' },
+            { value: D.formats.length, label: 'форматів подій' },
+            { value: upcomingEvents().length, label: 'подій в афіші' }
+        ];
+        mount.innerHTML = stats.map((s) => `
+            <div class="stat reveal">
+                <dt>${esc(s.label)}</dt>
+                <dd data-count-to="${s.value}">${s.value}</dd>
+            </div>`).join('');
+    }
+
+    function renderProjects() {
+        const list = $('#projectsList');
+        const preview = $('#projectsPreview');
+        if (!list || !preview) return;
+
+        list.innerHTML = D.projects.map((p, i) => `
+            <li class="projects__row reveal">
+                <button type="button" class="projects__item${i === 0 ? ' is-active' : ''}" data-project="${i}" aria-pressed="${i === 0}">
+                    <span class="projects__num">${pad(i + 1)}</span>
+                    <span class="projects__name">${esc(p.title)}</span>
+                    <span class="projects__tag">${esc(p.tag)}</span>
+                </button>
+                <div class="projects__mobile">
+                    <img src="${esc(p.photo)}" alt="" loading="lazy">
+                    <p>${esc(p.description)}</p>
+                    ${p.note ? `<span class="badge badge--outline">${esc(p.note)}</span>` : ''}
+                </div>
+            </li>`).join('');
+
+        preview.innerHTML = `
+            <figure class="projects__figure">
+                ${squares()}
+                ${D.projects.map((p, i) => `<img src="${esc(p.photo)}" alt="" loading="lazy" class="${i === 0 ? 'is-active' : ''}" data-project-img="${i}">`).join('')}
+                <figcaption class="projects__counter"><span id="projectsCounter">01</span> / ${pad(D.projects.length)}</figcaption>
+            </figure>
+            <div class="projects__info" id="projectsInfo"></div>`;
+
+        const info = $('#projectsInfo');
+        let current = -1;
+        const setActive = (i) => {
+            if (i === current) return;
+            current = i;
+            const p = D.projects[i];
+            $$('[data-project]', list).forEach((b) => {
+                const on = Number(b.dataset.project) === i;
+                b.classList.toggle('is-active', on);
+                b.setAttribute('aria-pressed', String(on));
+            });
+            $$('[data-project-img]', preview).forEach((img) => img.classList.toggle('is-active', Number(img.dataset.projectImg) === i));
+            $('#projectsCounter').textContent = pad(i + 1);
+            info.innerHTML = `
+                <span class="badge">${esc(p.tag)}</span>
+                <h3 class="projects__title">${esc(p.title)}</h3>
+                <p>${esc(p.description)}</p>
+                ${p.note ? `<span class="badge badge--outline">${esc(p.note)}</span>` : ''}`;
+            info.classList.remove('is-swapping');
+            void info.offsetWidth;
+            info.classList.add('is-swapping');
+        };
+
+        list.addEventListener('mouseover', (e) => {
+            const btn = e.target.closest('[data-project]');
+            if (btn && window.matchMedia('(hover: hover)').matches) setActive(Number(btn.dataset.project));
+        });
+        list.addEventListener('focusin', (e) => {
+            const btn = e.target.closest('[data-project]');
+            if (btn) setActive(Number(btn.dataset.project));
+        });
+        list.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-project]');
+            if (!btn) return;
+            const i = Number(btn.dataset.project);
+            // На мобільних кнопка розгортає/згортає опис під назвою
+            if (!window.matchMedia('(min-width: 901px)').matches && btn.classList.contains('is-active') && current === i) {
+                btn.classList.remove('is-active');
+                btn.setAttribute('aria-pressed', 'false');
+                current = -1;
+                return;
+            }
+            setActive(i);
+        });
+        setActive(0);
+    }
+
+    function renderFormats() {
+        const track = $('#formatsCarousel');
+        if (!track) return;
+        track.innerHTML = D.formats.map((f, i) => `
+            <a href="#events" class="format-card" data-filter-cat="${esc(f.category)}">
+                <span class="format-card__media"><img src="${esc(f.photo)}" alt="" loading="lazy"></span>
+                <span class="format-card__num">${pad(i + 1)}</span>
+                <span class="format-card__body">
+                    <span class="badge badge--outline">${esc(f.tag)}</span>
+                    <span class="format-card__title">${esc(f.title)}</span>
+                    <span class="format-card__text">${esc(f.text)}</span>
+                    <span class="format-card__action">Дивитися події ${icon.arrow}</span>
+                </span>
+            </a>`).join('');
+
+        const prev = $('[data-carousel-prev]');
+        const next = $('[data-carousel-next]');
+        const step = () => (track.firstElementChild?.getBoundingClientRect().width || 300) + 24;
+        const update = () => {
+            const max = track.scrollWidth - track.clientWidth - 4;
+            prev.disabled = track.scrollLeft <= 4;
+            next.disabled = track.scrollLeft >= max;
+        };
+        prev.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+        next.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+        track.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
+
+        // Перетягування мишею на десктопі
+        let drag = null;
+        track.addEventListener('pointerdown', (e) => {
+            if (e.pointerType !== 'mouse') return;
+            drag = { x: e.clientX, left: track.scrollLeft, moved: false };
+        });
+        window.addEventListener('pointermove', (e) => {
+            if (!drag) return;
+            const dx = e.clientX - drag.x;
+            if (Math.abs(dx) > 5) { drag.moved = true; track.classList.add('is-dragging'); }
+            track.scrollLeft = drag.left - dx;
+        });
+        window.addEventListener('pointerup', () => {
+            if (!drag) return;
+            track.classList.remove('is-dragging');
+            if (drag.moved) track.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); }, { capture: true, once: true });
+            drag = null;
+        });
+    }
+
+    function renderLectures() {
+        const list = $('#lecturesList');
+        if (!list) return;
+        list.innerHTML = D.lectures.map((topic, i) => `
+            <li class="reveal">
+                <a href="#events" class="lecture-row" data-filter-cat="Лекція">
+                    <span class="lecture-row__num">/${pad(i + 1)}</span>
+                    <span class="lecture-row__topic">${esc(topic)}</span>
+                    <span class="lecture-row__arrow">${icon.arrow}</span>
+                </a>
+            </li>`).join('');
+        const count = upcomingEvents().filter((ev) => ev.category === 'Лекція').length;
+        $$('[data-lecture-count]').forEach((el) => { el.textContent = count ? ` (${count})` : ''; });
+    }
+
+    const materialCard = (m, variant = '') => `
+        <article class="material-card${variant ? ` material-card--${variant}` : ''}">
             <a href="${materialUrl(m)}" class="material-card__media" tabindex="-1" aria-hidden="true">
                 <img src="${esc(m.cover)}" alt="" loading="lazy">
+                ${m.gallery?.length ? `<span class="material-card__count">${icon.camera}${m.gallery.length}</span>` : ''}
             </a>
             <div class="material-card__body">
-                <div class="card-meta">
+                <div class="card-meta card-meta--start">
                     <span class="badge">${esc(materialTypeLabel(m.type))}</span>
                     <time class="card-datetime" datetime="${esc(m.date)}">${esc(fmtFull.format(new Date(m.date)))}</time>
                 </div>
                 <h3 class="material-card__title"><a href="${materialUrl(m)}">${esc(m.title)}</a></h3>
                 <p class="material-card__lead">${esc(m.lead)}</p>
+                <span class="material-card__more" aria-hidden="true">Читати ${icon.arrow}</span>
             </div>
         </article>`;
 
-    const sortedMaterials = () => [...D.materials].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const sortedMaterials = () => [...D.materials].sort((a, b) =>
+        (b.featured ? 1 : 0) - (a.featured ? 1 : 0) || new Date(b.date) - new Date(a.date));
 
     function renderMaterialsPreview() {
-        const grid = $('#materialsPreview');
-        if (!grid) return;
-        const list = sortedMaterials().slice(0, 3);
-        grid.innerHTML = list.length ? list.map(materialCard).join('') : '<div class="empty-state"><p>Матеріали зʼявляться найближчим часом.</p></div>';
+        const mount = $('#materialsPreview');
+        if (!mount) return;
+        const [first, ...rest] = sortedMaterials();
+        if (!first) { mount.innerHTML = '<div class="empty-state"><p>Матеріали зʼявляться найближчим часом.</p></div>'; return; }
+        mount.innerHTML = `
+            <div class="materials-feature__main reveal">${materialCard(first, 'feature')}</div>
+            <div class="materials-feature__side">${rest.slice(0, 3).map((m) => `<div class="reveal">${materialCard(m, 'row')}</div>`).join('')}</div>`;
     }
 
+    const partnerShapes = [
+        '<circle cx="20" cy="20" r="14"/>',
+        '<rect x="7" y="7" width="26" height="26"/>',
+        '<polygon points="20,5 35,33 5,33"/>',
+        '<path d="M6 20h28M20 6v28"/><circle cx="20" cy="20" r="9"/>',
+        '<rect x="6" y="12" width="28" height="16"/><path d="M6 20h28"/>',
+        '<polygon points="20,4 36,20 20,36 4,20"/>'
+    ];
+
     function renderPartners() {
-        const grid = $('#partnersGrid');
-        if (!grid) return;
-        grid.innerHTML = D.partners.length
+        const mount = $('#partnersMarquee');
+        if (!mount) return;
+        const instagram = D.links.socials.find((s) => s.name === 'Instagram')?.url;
+        const cta = $('#partnerCta');
+        if (cta) cta.href = instagram || '#';
+
+        const items = D.partners.length
             ? D.partners.map((p) => `
                 <a class="partner-logo" href="${esc(p.url || '#')}" target="_blank" rel="noopener" title="${esc(p.name)}">
                     <img src="${esc(p.logo)}" alt="${esc(p.name)}" loading="lazy">
-                </a>`).join('')
-            : `<div class="empty-state empty-state--wide">
-                    <p>Логотипи донорів та організацій-партнерів зʼявляться тут найближчим часом.</p>
-               </div>`;
+                </a>`)
+            : Array.from({ length: 8 }, (_, i) => `
+                <div class="partner-logo partner-logo--ph">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">${partnerShapes[i % partnerShapes.length]}</svg>
+                    <span>Логотип<br>партнера ${pad(i + 1)}</span>
+                </div>`);
+
+        const half = Math.ceil(items.length / 2);
+        const rows = [items.slice(0, half), items.slice(half).length ? items.slice(half) : items];
+        mount.innerHTML = `
+            ${!D.partners.length ? '<p class="sr-only">Логотипи партнерів зʼявляться найближчим часом.</p>' : ''}
+            ${rows.map((row, r) => `
+                <div class="marquee marquee--partners${r ? ' marquee--reverse' : ''}" data-speed="40" aria-hidden="${!D.partners.length}">
+                    <div class="marquee__track">${row.join('')}</div>
+                </div>`).join('')}`;
     }
 
     function renderReports() {
-        const list = $('#reportsList');
-        if (!list) return;
-        list.innerHTML = D.reports.length
-            ? D.reports.map((r) => `
-                <a class="report-row" href="${esc(r.file)}" target="_blank" rel="noopener">
-                    <span class="report-row__year">${esc(r.year)}</span>
-                    <span class="report-row__title">${esc(r.title)}</span>
-                    <span class="report-row__action">Завантажити ${icon.arrow}</span>
-                </a>`).join('')
-            : `<div class="empty-state empty-state--wide">
-                    <p>Річні звіти про діяльність та використання донатів буде опубліковано в цьому розділі.</p>
-               </div>`;
+        const mount = $('#reportsList');
+        if (!mount) return;
+        const rows = D.reports.map((r) => `
+            <a class="report-row reveal" href="${esc(r.file)}" target="_blank" rel="noopener">
+                <span class="report-row__year">${esc(r.year)}</span>
+                <span class="report-row__title">${esc(r.title)}</span>
+                <span class="report-row__action">Завантажити ${icon.download}</span>
+            </a>`).join('');
+
+        mount.innerHTML = `
+            <div class="reports__plan">
+                ${D.reportsPlan.map((r, i) => `
+                    <article class="report-card reveal">
+                        <span class="report-card__num">${pad(i + 1)}</span>
+                        <h3 class="report-card__title">${esc(r.title)}</h3>
+                        <p>${esc(r.text)}</p>
+                        <span class="report-card__status"><span class="live-dot" aria-hidden="true"></span>Готується до публікації</span>
+                    </article>`).join('')}
+            </div>
+            ${rows ? `<div class="reports-list">${rows}</div>` : ''}`;
     }
+
+    const fmtCoord = ([lat, lng]) => `${lat.toFixed(4)}° N · ${lng.toFixed(4)}° E`;
 
     function renderContacts() {
         const grid = $('#contactsGrid');
         if (!grid) return;
         const instagram = D.links.socials.find((s) => s.name === 'Instagram')?.url;
-        grid.innerHTML = D.contacts.map((c) => `
-            <article class="contact-card">
-                <h3 class="contact-card__city">${esc(c.city)}</h3>
-                <p class="contact-card__role">${esc(c.role)}</p>
-                ${c.phone
-                    ? `<a class="btn btn--primary btn--block" href="tel:${esc(c.phone.replace(/[^+\d]/g, ''))}">${icon.phone}${esc(c.phone)}</a>`
-                    : `<p class="contact-card__pending">Робочий номер зʼявиться найближчим часом</p>
-                       <a class="btn btn--ghost btn--block" href="${esc(instagram)}" target="_blank" rel="noopener">Написати в Instagram</a>`}
+        grid.innerHTML = D.contacts.map((c, i) => `
+            <article class="hub-card${i === 0 ? '' : ''}" role="listitem" data-hub="${i}">
+                <button type="button" class="hub-card__select" data-hub-select="${i}" aria-pressed="false" aria-label="Показати ${esc(c.city)} на мапі">
+                    <span class="hub-card__idx">${pad(i + 1)}</span>
+                    <span class="hub-card__city">${esc(c.city)}</span>
+                    <span class="hub-card__coords">${esc(c.address || fmtCoord(c.coords))}</span>
+                </button>
+                <div class="hub-card__body">
+                    <p class="hub-card__role">${esc(c.role)}</p>
+                    ${c.phone
+                        ? `<a class="btn btn--primary btn--sm" href="tel:${esc(c.phone.replace(/[^+\d]/g, ''))}">${icon.phone}${esc(c.phone)}</a>`
+                        : `<p class="hub-card__pending">Номер зʼявиться найближчим часом</p>
+                           <a class="btn btn--ghost btn--sm" href="${esc(instagram)}" target="_blank" rel="noopener">${icon.instagram}Написати</a>`}
+                </div>
             </article>`).join('');
+        initHubsMap();
+    }
+
+    function initHubsMap() {
+        const el = $('#hubsMap');
+        const grid = $('#contactsGrid');
+        if (!el || !grid) return;
+        const hudCity = $('#mapHudCity');
+        const hudCoords = $('#mapHudCoords');
+        const overview = { center: [48.9, 31.4], zoom: window.innerWidth < 640 ? 5 : 6 };
+
+        const select = (i, fly = true) => {
+            $$('[data-hub]', grid).forEach((card) => {
+                const on = Number(card.dataset.hub) === i;
+                card.classList.toggle('is-active', on);
+                $('[data-hub-select]', card).setAttribute('aria-pressed', String(on));
+            });
+            const c = D.contacts[i];
+            hudCity.textContent = c ? `Хартія-Хаб · ${c.city}` : 'Україна';
+            hudCoords.textContent = fmtCoord(c ? c.coords : overview.center);
+            if (!map) return;
+            Object.values(markers).forEach((m, k) => m.getElement()?.classList.toggle('is-active', k === i));
+            if (fly) {
+                if (c) map.flyTo(c.coords, 12, { duration: 1.4 });
+                else map.flyTo(overview.center, overview.zoom, { duration: 1.2 });
+            }
+        };
+
+        grid.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-hub-select]');
+            if (!btn) return;
+            const i = Number(btn.dataset.hubSelect);
+            const already = btn.getAttribute('aria-pressed') === 'true';
+            select(already ? -1 : i);
+            if (!already && window.matchMedia('(max-width: 900px)').matches) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+
+        let map = null;
+        const markers = {};
+        if (!window.L) {
+            el.closest('.hubs__map').classList.add('is-fallback');
+            el.innerHTML = '<p class="map-fallback">Мапа тимчасово недоступна</p>';
+            return;
+        }
+
+        map = L.map(el, {
+            center: overview.center,
+            zoom: overview.zoom,
+            zoomControl: false,
+            scrollWheelZoom: false,
+            dragging: !L.Browser.mobile,
+            tap: false,
+            attributionControl: true
+        });
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            subdomains: 'abcd',
+            maxZoom: 18,
+            attribution: '&copy; OpenStreetMap &copy; CARTO'
+        }).addTo(map);
+        L.control.zoom({ position: 'bottomright', zoomInTitle: 'Наблизити', zoomOutTitle: 'Віддалити' }).addTo(map);
+
+        D.contacts.forEach((c, i) => {
+            const marker = L.marker(c.coords, {
+                icon: L.divIcon({
+                    className: 'map-pin',
+                    html: `<span class="map-pin__ring"></span><span class="map-pin__dot"></span><span class="map-pin__label">${esc(c.city)}</span>`,
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
+                }),
+                keyboard: false,
+                title: c.city
+            }).addTo(map);
+            marker.on('click', () => select(i));
+            markers[i] = marker;
+        });
+
+        // Колесо миші не перехоплює скрол сторінки, доки користувач не клікне по мапі
+        map.on('click focus', () => map.scrollWheelZoom.enable());
+        el.addEventListener('mouseleave', () => map.scrollWheelZoom.disable());
+        map.on('move', () => {
+            const c = map.getCenter();
+            hudCoords.textContent = fmtCoord([c.lat, c.lng]);
+        });
+
+        new IntersectionObserver((entries, obs) => {
+            if (entries[0].isIntersecting) { map.invalidateSize(); obs.disconnect(); }
+        }).observe(el);
+    }
+
+    function initTriad() {
+        const root = $('#triad');
+        if (!root) return;
+        const items = $$('.triad__list [data-node]', root);
+        const nodes = $$('.triad__node', root);
+        let active = -1, timer = null, paused = false;
+
+        const set = (i) => {
+            active = i;
+            items.forEach((el, k) => el.classList.toggle('is-active', k === i));
+            nodes.forEach((el, k) => el.classList.toggle('is-active', k === i));
+        };
+        const cycle = () => { if (!paused) set((active + 1) % items.length); };
+
+        items.forEach((el, i) => {
+            el.addEventListener('mouseenter', () => { paused = true; set(i); });
+            el.addEventListener('focus', () => { paused = true; set(i); });
+            el.addEventListener('mouseleave', () => { paused = false; });
+            el.addEventListener('blur', () => { paused = false; });
+        });
+
+        new IntersectionObserver(([entry]) => {
+            root.classList.toggle('is-visible', entry.isIntersecting || root.classList.contains('is-visible'));
+            clearInterval(timer);
+            if (entry.isIntersecting && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                if (active < 0) set(0);
+                timer = setInterval(cycle, 2800);
+            }
+        }, { threshold: 0.35 }).observe(root);
     }
 
     function initHeroVideo() {
@@ -950,7 +1324,7 @@
             `).join('');
             const list = sortedMaterials().filter((m) => current === 'all' || m.type === current);
             grid.innerHTML = list.length
-                ? list.map(materialCard).join('')
+                ? list.map((m) => materialCard(m)).join('')
                 : '<div class="empty-state"><p>У цій категорії поки немає матеріалів.</p></div>';
         };
 
@@ -992,6 +1366,8 @@
                     <h1 class="detail-title">${esc(m.title)}</h1>
                     <p class="article__lead">${esc(m.lead)}</p>
                 </header>
+
+                ${m.cover ? `<figure class="article__cover">${squares()}<img src="${esc(m.cover)}" alt=""></figure>` : ''}
 
                 <div class="article__body">
                     ${m.body.map((p) => `<p>${esc(p)}</p>`).join('')}
@@ -1064,73 +1440,6 @@
         });
     }
 
-    /* ---------- BACKGROUND CANVAS ---------- */
-
-    function initCanvas() {
-        const canvas = $('#touchCanvas');
-        if (!canvas) return;
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { canvas.remove(); return; }
-        const ctx = canvas.getContext('2d');
-        let width, height;
-        const resize = () => {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        };
-        resize();
-        window.addEventListener('resize', resize);
-
-        const count = window.innerWidth < 760 ? 16 : 32;
-        const rnd = (a, b) => a + Math.random() * (b - a);
-        const coords = () => [(48 + Math.random() * 3.5).toFixed(4), (30 + Math.random() * 6.5).toFixed(4)];
-        const nodes = Array.from({ length: count }, () => {
-            const [lat, lng] = coords();
-            return {
-                x: rnd(0, width), y: rnd(0, height), size: rnd(6, 14),
-                vx: rnd(-0.3, 0.3), vy: rnd(-0.3, 0.3),
-                opacity: rnd(0.2, 0.8), fade: rnd(0.003, 0.011), fadeIn: Math.random() > 0.5, lat, lng
-            };
-        });
-
-        let raf;
-        const frame = () => {
-            ctx.clearRect(0, 0, width, height);
-            for (let a = 0; a < nodes.length; a++) {
-                for (let b = a + 1; b < nodes.length; b++) {
-                    const dist = Math.hypot(nodes[a].x - nodes[b].x, nodes[a].y - nodes[b].y);
-                    if (dist < 140) {
-                        ctx.strokeStyle = `rgba(181, 213, 83, ${(1 - dist / 140) * Math.min(nodes[a].opacity, nodes[b].opacity) * 0.35})`;
-                        ctx.lineWidth = 0.8;
-                        ctx.beginPath();
-                        ctx.moveTo(nodes[a].x + nodes[a].size / 2, nodes[a].y + nodes[a].size / 2);
-                        ctx.lineTo(nodes[b].x + nodes[b].size / 2, nodes[b].y + nodes[b].size / 2);
-                        ctx.stroke();
-                    }
-                }
-            }
-            nodes.forEach((n) => {
-                n.x = (n.x + n.vx + width) % width;
-                n.y = (n.y + n.vy + height) % height;
-                if (n.fadeIn) { n.opacity += n.fade; if (n.opacity >= 0.7) n.fadeIn = false; }
-                else {
-                    n.opacity -= n.fade;
-                    if (n.opacity <= 0.05) { n.fadeIn = true; [n.lat, n.lng] = coords(); }
-                }
-                ctx.strokeStyle = `rgba(181, 213, 83, ${n.opacity})`;
-                ctx.lineWidth = 1.2;
-                ctx.strokeRect(n.x, n.y, n.size, n.size);
-                ctx.fillStyle = `rgba(181, 213, 83, ${n.opacity * 0.8})`;
-                ctx.font = '9px "Inter Tight", sans-serif';
-                ctx.fillText(`${n.lat}°N ${n.lng}°E`, n.x + n.size + 6, n.y + 7);
-            });
-            raf = requestAnimationFrame(frame);
-        };
-        frame();
-        document.addEventListener('visibilitychange', () => {
-            cancelAnimationFrame(raf);
-            if (!document.hidden) frame();
-        });
-    }
-
     /* ---------- BOOT ---------- */
 
     renderHeader();
@@ -1141,7 +1450,6 @@
     initRegistration();
     initCabinet();
     initGlobalEventActions();
-    initCanvas();
 
     ({
         home: initHome,
@@ -1150,4 +1458,5 @@
         materials: initMaterialsPage,
         material: initMaterialPage
     })[page]?.();
+    initMarquees();
 })();
