@@ -190,6 +190,15 @@ p { line-height: 1.4; color: var(--gray-200); }
     user-select: none;
 }
 .btn svg { flex-shrink: 0; }
+.btn:not(.btn--icon):not(:has(svg))::after {
+    content: "";
+    width: 1.15em;
+    height: 1.15em;
+    flex-shrink: 0;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M12 2L22 12 12 22 2 12Z M10.35 7.4h3.3V10.35H16.6v3.3h-2.95V16.6h-3.3v-2.95H7.4v-3.3h2.95V7.4Z'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M12 2L22 12 12 22 2 12Z M10.35 7.4h3.3V10.35H16.6v3.3h-2.95V16.6h-3.3v-2.95H7.4v-3.3h2.95V7.4Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
 .btn:active { transform: translateY(1px); }
 
 .btn--primary { background: var(--accent); color: var(--black); }
